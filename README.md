@@ -1,8 +1,10 @@
 #pouchdb-multisync
 ##for those of you using db per user auth provisioning scheme, this the multilistening library you are waiting for
-
+```
 npm install pouchdb-multisync --save
-
+```
+then in your code:
+```
 var sync_tool 	 = require('pouchdb-multisync')
 var config 		 = 
 {
@@ -44,3 +46,4 @@ sync_tool
 	config.couch,			
 	non_user_dbs	
 )
+```
