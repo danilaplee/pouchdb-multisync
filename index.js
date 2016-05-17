@@ -14,7 +14,8 @@ var helper =
     {
     	live: true, 
     	retry: true,  
-    	heartbeat:5000
+    	heartbeat:5000,
+    	storage:require('memdown')
     },
 	newUser:function(user)
 	{
@@ -70,7 +71,7 @@ var helper =
 	    console.log('======== syncing database '+db_name+' =======')
 	    local_dbs.push(db_name)
 		var couch_string = 'https://'+couch_conf.domain+':'+couch_conf.port+'/'
-	    var local        = new PouchDB(db_name, {db : require('memdown')});
+	    var local        = new PouchDB(db_name, {db : helper.config.storage});
 	    var remote_url   = couch_string+db_name
 	    var remote       = new PouchDB(remote_url, {auth: couch_conf.auth})
 	    local_store[db_name] = local;
@@ -173,12 +174,18 @@ var helper =
 	        if(pollTimer) setInterval(helper.memPoll, pollTimer);
 	    })
 	},
-	bindSync:function(onChange, pollInterval, config, non_user)
+	bindSync:function(onChange, couch_config, sync_conf, rep_conf)
 	{
+		if(!onChange || typeof onChange != 'function') throw new Error('invalid change listener');
+		if(!couch_config) throw new Error('no couch config');
 		changeListener 		= onChange;
-		pollTimer 			= pollInterval;
-		helper.couch_conf 	= config;
-		non_user 			= non_user_dbs;
+		couch_conf 			= couch_config;
+		if(rep_conf)	helper.config = rep_conf
+		if(sync_conf)
+		{
+			pollTimer 			= sync_conf.in_mem_poll_timer;
+			non_user_dbs		= sync_conf.non_user_dbs;
+		}
 	}
 }
 module.exports = helper

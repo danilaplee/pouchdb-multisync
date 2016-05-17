@@ -18,10 +18,22 @@ var config 		 =
 			password:'admin-password'
 		}
 	},
-	mem_poll_timer:10000 // If you want to relisten events on the stored memory,
-	localDBStorage:require('memdown') // Default is memdown
+	sync_tool:
+	{
+		// If you want to relisten events on the stored memory,
+		in_mem_poll_timer:10000, 
+		// If you want to exclude some dbs from user based events
+		non_user_dbs:['orders', 'other-non-user-db']
+	},
+	//here you can pass the variables for pouchdb replication
+	replication:
+	{
+		live: true, 
+    	retry: true,  
+    	heartbeat:5000,
+    	local_storage: require('memdown') // Default is memdown
+	}
 }
-var non_user_dbs = ['orders', 'other-non-user-db']
 
 var db_listener  = function(local_db, db_name, docs, remote_db) 
 {
@@ -42,8 +54,9 @@ var db_listener  = function(local_db, db_name, docs, remote_db)
 sync_tool
 .bindParams(
 	db_listener,
-	config.local_mem_poll_timer, 
 	config.couch,			
-	non_user_dbs	
+	config.sync_tool,	// THIS IS OPTIONAL
+	config.replication 	// THIS IS OPTIONAL	
 )
+sync_tool.initSync()
 ```
