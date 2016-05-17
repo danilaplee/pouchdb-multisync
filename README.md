@@ -1,5 +1,5 @@
 #pouchdb-multisync
-##for those of you using db per user auth provisioning scheme, this the multilistening library you are waiting for
+###for those of you using db per user auth provisioning scheme, this is the multilistening library you are waiting for
 ```
 npm install pouchdb-multisync --save
 ```
