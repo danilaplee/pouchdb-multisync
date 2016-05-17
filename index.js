@@ -176,7 +176,7 @@ var helper =
 	        if(pollTimer) setInterval(helper.memPoll, pollTimer);
 	    })
 	},
-	bindSync:function(onChange, couch_config, sync_conf, rep_conf)
+	bindParams:function(onChange, couch_config, sync_conf, rep_conf)
 	{
 		if(!onChange || typeof onChange != 'function') throw new Error('invalid change listener');
 		if(!couch_config) throw new Error('no couch config');
