@@ -7,6 +7,7 @@ var remote_store = [];
 var changeListener;
 var pollTimer;
 var couch_conf;
+var non_user_dbs;
 var helper =
 {
 	config: 
@@ -24,6 +25,7 @@ var helper =
 	},
 	isUserDB:function(db_name)
 	{
+		if(non_user_dbs) for (var i = non_user_dbs.length - 1; i >= 0; i--) if(non_user_dbs[i] == db_name) return null;
 	    if(db_name != 'orders' && db_name[0] != '_') return true;
 	    return null;
 	},
@@ -171,11 +173,12 @@ var helper =
 	        if(pollTimer) setInterval(helper.memPoll, pollTimer);
 	    })
 	},
-	bindSync:function(onChange, pollInterval, config)
+	bindSync:function(onChange, pollInterval, config, non_user)
 	{
 		changeListener 		= onChange;
 		pollTimer 			= pollInterval;
 		helper.couch_conf 	= config;
+		non_user 			= non_user_dbs;
 	}
 }
 module.exports = helper
