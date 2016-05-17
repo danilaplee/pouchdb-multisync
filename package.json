@@ -22,7 +22,8 @@
   "dependencies": {
     "felix-couchdb": "^1.0.8",
     "memdown": "^1.1.2",
-    "pouchdb": "^5.3.1"
+    "pouchdb": "^5.3.1",
+    "pouchdb-all-dbs": "^1.0.1"
   },
   "author": "danilaplee",
   "license": "ISC",

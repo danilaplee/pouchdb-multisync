@@ -27,7 +27,7 @@ var helper =
 	isUserDB:function(db_name)
 	{
 		if(non_user_dbs) for (var i = non_user_dbs.length - 1; i >= 0; i--) if(non_user_dbs[i] == db_name) return null;
-	    if(db_name != 'orders' && db_name[0] != '_') return true;
+	    if(db_name[0] != '_') return true;
 	    return null;
 	},
 	parseSyncError:function(title, err, db_name)
@@ -172,7 +172,7 @@ var helper =
 	            throw new Error(err.reponseText);
 	        }
 	        var databases = data.json
-	        for (var i = databases.length - 1; i >= 0; i--) helper.syncDBs(databases[i]);
+	        for (var i = databases.length - 1; i >= 0; i--) if(helper.isUserDB(databases[i]) || databases[i] == '_users') helper.syncDBs(databases[i]);
 	        if(pollTimer) setInterval(helper.memPoll, pollTimer);
 	    })
 	},
@@ -185,8 +185,8 @@ var helper =
 		if(rep_conf)	helper.config = rep_conf
 		if(sync_conf)
 		{
-			pollTimer 			= sync_conf.in_mem_poll_timer;
-			non_user_dbs		= sync_conf.non_user_dbs;
+			pollTimer 	 = sync_conf.in_mem_poll_timer;
+			non_user_dbs = sync_conf.non_user_dbs;
 		}
 	}
 }
