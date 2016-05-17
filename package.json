@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-multisync",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "pouchdb db per user scheme sync tool",
   "main": "index.js",
   "scripts": {
