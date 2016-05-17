@@ -1,22 +1,12 @@
 var PouchDB 	 = require('pouchdb')
-	PouchDB.setMaxListeners(1000)
+PouchDB.setMaxListeners(1000)
 var couchdb 	 = require('felix-couchdb')
-var config       = require('./config');
-var couch_conf 	 = config.couch
-var couch_string = 'https://'+couch_conf.domain+':'+couch_conf.port+'/'
-var client		 = couchdb.createClient(
-	couch_conf.port, 
-	couch_conf.domain,
-	couch_conf.auth.username, 
-	couch_conf.auth.password,
-	500,
-	true
-);
-var local_dbs 	= [];
-var local_store = [];
+var local_dbs 	 = [];
+var local_store  = [];
 var remote_store = [];
 var changeListener;
 var pollTimer;
+var couch_conf;
 var helper =
 {
 	config: 
@@ -77,9 +67,10 @@ var helper =
 	{
 	    console.log('======== syncing database '+db_name+' =======')
 	    local_dbs.push(db_name)
-	    var local       = new PouchDB(db_name)//, {db : require('memdown')})
-	    var remote_url  = couch_string+db_name
-	    var remote      = new PouchDB(remote_url, {auth: couch_conf.auth})
+		var couch_string = 'https://'+couch_conf.domain+':'+couch_conf.port+'/'
+	    var local        = new PouchDB(db_name, {db : require('memdown')});
+	    var remote_url   = couch_string+db_name
+	    var remote       = new PouchDB(remote_url, {auth: couch_conf.auth})
 	    local_store[db_name] = local;
 	    remote_store[db_name] = remote;
 	    local
@@ -156,6 +147,14 @@ var helper =
 	},
 	initSync:function()
 	{
+		var client = couchdb.createClient(
+			couch_conf.port, 
+			couch_conf.domain,
+			couch_conf.auth.username, 
+			couch_conf.auth.password,
+			500,
+			true
+		);
 	    client.request(
 	    {
 	      path: '/_all_dbs',
@@ -174,9 +173,9 @@ var helper =
 	},
 	bindSync:function(onChange, pollInterval, config)
 	{
-		changeListener = onChange;
-		pollTimer = pollInterval;
-		if(config) helper.config = config;
+		changeListener 		= onChange;
+		pollTimer 			= pollInterval;
+		helper.couch_conf 	= config;
 	}
 }
 module.exports = helper
