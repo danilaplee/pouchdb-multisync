@@ -70,7 +70,9 @@ var helper =
 	{
 	    console.log('======== syncing database '+db_name+' =======')
 	    local_dbs.push(db_name)
-		var couch_string = 'https://'+couch_conf.domain+':'+couch_conf.port+'/'
+	    if(couch_conf.ssl) var protocol = 'https://';
+	    else var protocol = 'http://';
+		var couch_string = protocol+couch_conf.domain+':'+couch_conf.port+'/'
 	    var local        = new PouchDB(db_name, {db : helper.config.local_storage});
 	    var remote_url   = couch_string+db_name
 	    var remote       = new PouchDB(remote_url, {auth: couch_conf.auth})

@@ -11,6 +11,7 @@ var config 		 =
 	couch:
 	{
 		port:6984,
+		ssl:true,
 		domain:'couch.url.com',
 		auth:
 		{

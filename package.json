@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-multisync",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "pouchdb db per user scheme sync tool",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,8 @@
     "sync",
     "replication",
     "listening",
-    "nodejs"
+    "nodejs",
+    "db per user"
   ],
   "dependencies": {
     "felix-couchdb": "^1.0.8",
