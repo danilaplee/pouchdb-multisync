@@ -4,6 +4,7 @@ var couchdb 	 = require('felix-couchdb')
 var local_dbs 	 = [];
 var local_store  = [];
 var remote_store = [];
+var replications = [];
 var changeListener;
 var pollTimer;
 var couch_conf;
@@ -76,13 +77,15 @@ var helper =
 	    var local        = new PouchDB(db_name, {db : helper.config.local_storage});
 	    var remote_url   = couch_string+db_name
 	    var remote       = new PouchDB(remote_url, {auth: couch_conf.auth})
-	    local_store[db_name] = local;
-	    remote_store[db_name] = remote;
-	    local
+	    local_store[db_name] 	= local;
+	    remote_store[db_name] 	= remote;
+	    replications[db_name] 	= local
 	    .sync(remote, helper.config)
 	    .on('error', function (err) 
 	    {
 	        helper.parseSyncError('sync error', err, db_name)
+			replications[db_name].cancel()
+			syncDBs(db_name);
 	    })
 	    .on('denied',function (err) 
 	    {
@@ -94,6 +97,7 @@ var helper =
 	    })
 	    .on('complete', function (info)
 	    {
+			replications[db_name].cancel()
 	        console.log('======= sync for db '+db_name+' complete ======')
 	        console.log(info)
 	        console.log(info.push.errors)
@@ -109,6 +113,8 @@ var helper =
 		replication.on('complete', function()
 		{
 			replication.cancel()
+			replications[db_name].cancel()
+			syncDBs(db_name);
 			console.log('====== replication complete =====')
 		})
 		.on('error', function (err) 
