@@ -85,7 +85,7 @@ var helper =
 	    {
 	        helper.parseSyncError('sync error', err, db_name)
 			replications[db_name].cancel()
-			syncDBs(db_name);
+			helper.syncDBs(db_name);
 	    })
 	    .on('denied',function (err) 
 	    {
@@ -97,11 +97,12 @@ var helper =
 	    })
 	    .on('complete', function (info)
 	    {
-			replications[db_name].cancel()
 	        console.log('======= sync for db '+db_name+' complete ======')
 	        console.log(info)
 	        console.log(info.push.errors)
 	        console.log('===============================================')
+			replications[db_name].cancel()
+	        helper.syncDBs(db_name);
 	    })
 
 	},
@@ -110,19 +111,20 @@ var helper =
 		var local 		= helper.getDb(db_name)
 		var remote 		= helper.getRemote(db_name)
 		var replication = local.replicate.to(remote)
-		replication.on('complete', function()
+		replication.on('complete', function(status)
 		{
 			replication.cancel()
 			replications[db_name].cancel()
-			syncDBs(db_name);
+			helper.syncDBs(db_name);
 			console.log('====== replication complete =====')
+			console.log(status)
 		})
 		.on('error', function (err) 
 		{
 			console.error('====== replication error =====')
+			console.error(err)
 			replication.cancel()
 			helper.replicateToRemote(db_name)
-			console.error(err)
 		});
 	},
 	resolvePoll:function(db, db_name, remote)
